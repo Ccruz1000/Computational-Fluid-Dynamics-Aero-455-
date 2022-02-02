@@ -6,8 +6,8 @@ import os
 # Import User Defined Functions
 
 # Initiate panel solver
-geometry = 'Circle'
 # geometry = 'fx76mp140_selig.txt'
+geometry = 'Circle'
 num_panels = np.arange(4, 40, 2, dtype=int)
 alpha_0 = 0
 
@@ -67,6 +67,7 @@ def source_panel(num, geom, alpha):
     # Compute panel angle w.r.t horizontal and w.r.t alpha (rad)
     delta = phi + (np.pi / 2)
     beta = delta - (alpha * (np.pi/180))
+    print(beta)
 
     # Plot panels
     x = data[:, 0]
@@ -84,9 +85,9 @@ def source_panel(num, geom, alpha):
         circle = plt.Circle((0, 0), 1, fill=False, color='black', linestyle='--', label=' Unit Circle')  # Create circle
         plt.gca().add_patch(circle)  # Plot circle
     # Plot Boundary Points
-    plt.scatter(x, y, label='Boundary Points', color='lime')
+    plt.scatter(x, y, label='Boundary Points', color='r')
     # Plot Control Points
-    plt.scatter(control_data[:, 0], control_data[:, 1], label='Control Points', color='cyan')
+    plt.scatter(control_data[:, 0], control_data[:, 1], label='Control Points', color='b')
     plt.legend(loc='upper center', ncol=2)
     plt.tight_layout()
     # Save files in folder
@@ -95,8 +96,8 @@ def source_panel(num, geom, alpha):
     if not os.path.exists(plot_folder):
         os.makedirs(plot_folder, exist_ok=True)
     plt.savefig(plot_folder + '/Circle' + str(num) + '.png', bbox_extra_artists='legend_outside,')
-    # plt.show()
-    plt.close()
+    plt.show()
+    # plt.close()
 
 
 for number in num_panels:
