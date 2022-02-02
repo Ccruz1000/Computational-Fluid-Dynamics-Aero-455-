@@ -8,7 +8,7 @@ import os
 # Initiate panel solver
 geometry = 'Circle'
 # geometry = 'fx76mp140_selig.txt'
-num_panels = np.linspace(4, 40, num=20, dtype=int)
+num_panels = np.arange(4, 40, 2, dtype=int)
 alpha_0 = 0
 
 
