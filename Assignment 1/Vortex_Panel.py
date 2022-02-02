@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import scipy as sp
 # Import User Defined Functions
 
-data_file = 'coordinates.txt'  # Import coordinates file
+data_file = 'fx76mp140_selig.txt'
 data = np.loadtxt(data_file, skiprows=1, dtype=float)
 
 # Plot panels
