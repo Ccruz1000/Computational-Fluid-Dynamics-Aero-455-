@@ -6,10 +6,11 @@ import os
 # Import User Defined Functions
 
 # Initiate panel solver
-# geometry = 'fx76mp140_selig.txt'
+geometry1 = 'fx76mp140_selig'
 geometry = 'Circle'
-num_panels = np.arange(4, 40, 2, dtype=int)
+num_panels = np.arange(4, 20, 2, dtype=int)
 alpha_0 = 0
+number = 2
 
 
 def source_panel(num, geom, alpha):
@@ -38,11 +39,12 @@ def source_panel(num, geom, alpha):
         y_bot_lim = -0.5
         data = np.loadtxt(geom, skiprows=1, dtype='float')
 
+
     panel_num = len(data) - 1
     # Check direction of panels
     edge = np.zeros(panel_num)  # Initialize edge array
     for i in range(panel_num):
-        edge[i] = (data[i + 1][0] - data[i][0] * (data[i + 1][1] - data[i][1]))  # Check value for each panel
+        edge[i] = (data[i + 1][0] - data[i][0]) * (data[i + 1][1] - data[i][1])  # Check value for each panel
     edge_sum = np.sum(edge)
 
     # Flip if panels are the wrong direction
@@ -67,14 +69,13 @@ def source_panel(num, geom, alpha):
     # Compute panel angle w.r.t horizontal and w.r.t alpha (rad)
     delta = phi + (np.pi / 2)
     beta = delta - (alpha * (np.pi/180))
-    print(beta)
+    # print(beta)
 
     # Plot panels
     x = data[:, 0]
     y = data[:, 1]
     plt.figure(0)
     plt.fill(x, y, color='black', label='Panels')  # Plot geometry
-    plt.title('Panel Geometry ' + str(num) + ' Panels')
     plt.ylabel('Y Axis')
     plt.ylim((y_bot_lim, y_top_lim))
     plt.xlabel('X Axis')
@@ -84,6 +85,9 @@ def source_panel(num, geom, alpha):
         plt.figure(0)
         circle = plt.Circle((0, 0), 1, fill=False, color='black', linestyle='--', label=' Unit Circle')  # Create circle
         plt.gca().add_patch(circle)  # Plot circle
+        plt.title('Panel Geometry ' + str(num) + ' Panels')
+    else:
+        plt.title(geometry1)
     # Plot Boundary Points
     plt.scatter(x, y, label='Boundary Points', color='r')
     # Plot Control Points
@@ -95,10 +99,11 @@ def source_panel(num, geom, alpha):
     plot_folder = current_path + '/' + 'Panels'
     if not os.path.exists(plot_folder):
         os.makedirs(plot_folder, exist_ok=True)
-    plt.savefig(plot_folder + '/Circle' + str(num) + '.png', bbox_extra_artists='legend_outside,')
+    plt.savefig(plot_folder + '/' + geometry + str(num) + '.png', bbox_extra_artists='legend_outside')
     plt.show()
     # plt.close()
 
 
 for number in num_panels:
-    source_panel(number, geometry, alpha_0)
+  source_panel(number, geometry, alpha_0)
+#source_panel(number, geometry1 + '.txt', alpha_0)
