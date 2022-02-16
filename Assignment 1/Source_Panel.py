@@ -146,4 +146,4 @@ def source_panel(num, geom, alpha):
 
 # for number in num_panels:
 #     source_panel(number, geometry, alpha_0)
-source_panel(400, geometry1 + '.txt', alpha_0)
+source_panel(14, geometry1 + '.txt', alpha_0)

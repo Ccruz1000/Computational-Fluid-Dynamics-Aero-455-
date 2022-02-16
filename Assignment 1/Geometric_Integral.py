@@ -37,7 +37,7 @@ def geometric_integral(control, boundary, phi, length):
                     i_int[i, j] = i_term1 + i_term2
                     # Calculate J integral
                     j_term1 = 0.5 * Ct * np.log((length[j] ** 2 + 2 * A * length[j] + B) / B)
-                    j_term2 = ((Dn - A * Cn) / E) * (m.atan2((length[j] + A), E) - m.atan2(A, E))
+                    j_term2 = ((Dt - A * Ct) / E) * (m.atan2((length[j] + A), E) - m.atan2(A, E))
                     j_int[i, j] = j_term1 + j_term2
 
             # Remove values that cause error
