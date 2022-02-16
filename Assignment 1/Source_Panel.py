@@ -9,7 +9,8 @@ from Geometric_Integral import geometric_integral
 # Initiate panel solver
 geometry1 = 'fx76mp140_selig'
 geometry = 'Circle'
-num_panels = np.arange(4, 20, 2, dtype=int)
+# num_panels = np.arange(4, 20, 2, dtype=int)
+num_panels = [6, 12, 24, 48, 96, 192, 384, 768]
 alpha_0 = 0
 V_inf = 1
 number = 2
@@ -92,6 +93,7 @@ def source_panel(num, geom, alpha):
     # Compute source panel strength
     lam = np.linalg.solve(A, b)
     # Check source panel strength (Should be 0 assuming closed shape)
+    print(lam)
     print("Sum of L: ", sum(lam*panel_length))
 
     # Calculate velocities and pressure coefficient
@@ -105,7 +107,9 @@ def source_panel(num, geom, alpha):
 
         vt[i] = V_inf * np.sin(beta[i]) + cntr
         cp[i] = 1 - (vt[i] / V_inf)**2
+    print(cp)
 
+    residual = sum(lam*panel_length)
 
 
     # Plot panels
@@ -126,9 +130,9 @@ def source_panel(num, geom, alpha):
     else:
         plt.title(geometry1)
     # Plot Boundary Points
-    plt.scatter(x, y, label='Boundary Points', color='r')
+    plt.scatter(x, y, label='Boundary Points', color='r', s=4)
     # Plot Control Points
-    plt.scatter(control_data[:, 0], control_data[:, 1], label='Control Points', color='b')
+    plt.scatter(control_data[:, 0], control_data[:, 1], label='Control Points', color='b', s=4)
     plt.legend(loc='upper center', ncol=2)
     plt.tight_layout()
     # Save files in folder
@@ -137,13 +141,20 @@ def source_panel(num, geom, alpha):
     if not os.path.exists(plot_folder):
         os.makedirs(plot_folder, exist_ok=True)
     plt.savefig(plot_folder + '/' + geometry + str(num) + '.png', bbox_extra_artists='legend_outside')
-    # plt.show()
+    plt.show()
     plt.close()
     plt.figure(1)
-    plt.scatter(beta * (180/np.pi), cp)
+    plt.scatter(beta * (180/np.pi), cp, s=1)
     plt.show()
+    return residual
+residual1 = []
 
 
-# for number in num_panels:
-#     source_panel(number, geometry, alpha_0)
-source_panel(14, geometry1 + '.txt', alpha_0)
+for number in num_panels:
+    check = source_panel(number, geometry, alpha_0)
+    residual1.append(check)
+plt.figure(2)
+plt.plot(num_panels, residual1)
+
+plt.show()
+# source_panel(100, geometry, alpha_0)
