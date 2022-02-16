@@ -4,12 +4,14 @@ import matplotlib.pyplot as plt
 import math as m
 import os
 # Import User Defined Functions
+from Geometric_Integral import geometric_integral
 
 # Initiate panel solver
 geometry1 = 'fx76mp140_selig'
 geometry = 'Circle'
 num_panels = np.arange(4, 20, 2, dtype=int)
 alpha_0 = 0
+V_inf = 1
 number = 2
 
 
@@ -67,9 +69,44 @@ def source_panel(num, geom, alpha):
         if phi[i] < 0:
             phi[i] = phi[i] + 2 * np.pi  # Add 2pi rad to convert negative angle to positive
     # Compute panel angle w.r.t horizontal and w.r.t alpha (rad)
-    delta = phi + (np.pi / 2)
-    beta = delta - (alpha * (np.pi/180))
-    # print(beta)
+    delta = phi + (np.pi / 2)   # Panel normal angle (rad)
+    beta = delta - (alpha * (np.pi/180))    # Angle between alpha and panel normal (rad)
+    beta[beta > 2*np.pi] = beta[beta > 2 * np.pi] - 2*np.pi # Convert angles over 2pi to between 0 and 2pi
+
+    # Calculate I and J integral
+    I, J = geometric_integral(control_data, data, phi, panel_length)
+
+    # Create A matrix
+    A = np.zeros([panel_num, panel_num])
+    for i in range(panel_num):
+        for j in range(panel_num):
+            if i == j:
+                A[i, j] = np.pi
+            else:
+                A[i, j] = I[i, j]
+    # Create b array in Ax + b = 0
+    b = np.zeros(panel_num)
+    for i in range(panel_num):
+        b[i] = - V_inf * 2 * np.pi * np.cos(beta[i])
+
+    # Compute source panel strength
+    lam = np.linalg.solve(A, b)
+    # Check source panel strength (Should be 0 assuming closed shape)
+    print("Sum of L: ", sum(lam*panel_length))
+
+    # Calculate velocities and pressure coefficient
+    vt = np.zeros(panel_num)
+    cp = np.zeros(panel_num)
+
+    for i in range(panel_num):
+        cntr = 0
+        for j in range(panel_num):
+            cntr = cntr + (lam[j] / (2 * np.pi)) * J[i, j]
+
+        vt[i] = V_inf * np.sin(beta[i]) + cntr
+        cp[i] = 1 - (vt[i] / V_inf)**2
+
+
 
     # Plot panels
     x = data[:, 0]
@@ -100,10 +137,13 @@ def source_panel(num, geom, alpha):
     if not os.path.exists(plot_folder):
         os.makedirs(plot_folder, exist_ok=True)
     plt.savefig(plot_folder + '/' + geometry + str(num) + '.png', bbox_extra_artists='legend_outside')
+    # plt.show()
+    plt.close()
+    plt.figure(1)
+    plt.scatter(beta * (180/np.pi), cp)
     plt.show()
-    # plt.close()
 
 
-for number in num_panels:
-  source_panel(number, geometry, alpha_0)
-#source_panel(number, geometry1 + '.txt', alpha_0)
+# for number in num_panels:
+#     source_panel(number, geometry, alpha_0)
+source_panel(400, geometry1 + '.txt', alpha_0)
