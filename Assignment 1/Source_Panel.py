@@ -203,6 +203,6 @@ def source_panel(num, geom, alpha):
 # if not os.path.exists(plot_folder):
 #     os.makedirs(plot_folder, exist_ok=True)
 # plt.savefig(plot_folder + '/Residual.png', bbox_extra_artists='legend_outside')
-# # plt.show()
 # plt.show()
+# plt.close()
 source_panel(16138, geometry, alpha_0)
