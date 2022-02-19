@@ -10,10 +10,10 @@ from Geometric_Integral import geometric_integral
 geometry1 = 'fx76mp140_selig'
 geometry = 'Circle'
 # num_panels = np.arange(4, 20, 2, dtype=int)
-# num_panels = [6, 12, 24, 48, 96, 192, 384, 768]
-num_panels = []
-for i in range(2, 14):
-    num_panels.append(2**i)
+num_panels = [6, 12, 24, 48, 96, 192, 384, 768]
+# num_panels = []
+# for i in range(2, 14):
+#     num_panels.append(2**i)
 
 alpha_0 = 0
 V_inf = 1
@@ -187,22 +187,22 @@ def source_panel(num, geom, alpha):
     return residual
 
 
-# residual1 = []
-# for number in num_panels:
-#     check = source_panel(number, geometry, alpha_0)
-#     residual1.append(check)
-#
-# plt.figure(3)
-# plt.plot(num_panels, residual1, color='r', label='Residual')
-# plt.title('Source Panel Method Residual')
-# plt.xlabel('Number of Panels')
-# plt.ylabel('Residual')
-# plt.legend(loc='best')
-# current_path = os.getcwd()
-# plot_folder = current_path + '/' + 'Residual'
-# if not os.path.exists(plot_folder):
-#     os.makedirs(plot_folder, exist_ok=True)
-# plt.savefig(plot_folder + '/Residual.png', bbox_extra_artists='legend_outside')
-# plt.show()
-# plt.close()
-source_panel(16138, geometry, alpha_0)
+residual1 = []
+for number in num_panels:
+    check = source_panel(number, geometry, alpha_0)
+    residual1.append(check)
+
+plt.figure(3)
+plt.plot(num_panels, residual1, color='r', label='Residual')
+plt.title('Source Panel Method Residual')
+plt.xlabel('Number of Panels')
+plt.ylabel('Residual')
+plt.legend(loc='best')
+current_path = os.getcwd()
+plot_folder = current_path + '/' + 'Residual'
+if not os.path.exists(plot_folder):
+    os.makedirs(plot_folder, exist_ok=True)
+plt.savefig(plot_folder + '/Residual.png', bbox_extra_artists='legend_outside')
+plt.show()
+plt.close()
+# source_panel(16138, geometry, alpha_0)
