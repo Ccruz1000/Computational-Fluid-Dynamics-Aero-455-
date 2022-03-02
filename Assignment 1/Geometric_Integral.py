@@ -4,8 +4,10 @@ import math as m
 # User defined functions
 
 # np.seterr('raise')  # Raise floating point error when encountered
-
-
+num_panel = []
+for i in range(2, 17):
+    num_panel.append(2 ** i)
+print(num_panel)
 # Define function to calculate geometric integral I and J
 def geometric_integral(control, boundary, phi, length):
 
