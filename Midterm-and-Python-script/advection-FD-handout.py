@@ -147,7 +147,7 @@ def linear_advection (N):
     return None
 
 
-def first_order_backward (N):
+def backward_first_order (N):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
@@ -327,7 +327,7 @@ q = []
 dx = []
 x = []
 for i in range(len(num)):
-    q_sol, x_sol, dt_sol, dx_sol = backward_second_order(num[i])
+    q_sol, x_sol, dt_sol, dx_sol = backward_first_order(num[i])
     q.append(q_sol)
     x.append(x_sol)
     dt.append(dt_sol)
