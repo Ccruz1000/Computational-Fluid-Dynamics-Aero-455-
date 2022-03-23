@@ -6,6 +6,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+N = 200
 
 def step(t, t_end, step_value):
     """Returns a step function with maximum equal to step_value
@@ -68,7 +69,6 @@ def d1_o2_b3(dx, q, N):
         dqdx[i] = (3 * q[i] - 4 * q[i-1] + q[i-2]) / (2 * dx)
     return dqdx
 
-
 # physical parameters
 L = 1.0  # length of line domain
 a = 1.0  # advection velocity a
@@ -81,7 +81,7 @@ t = 0.  # time variable
 # t = np.zeros(int(t_final/dt))
 
 # space discretization variables
-N = 200  # number of 1D cells
+# N = 200  # number of 1D cells
 dx = L/N  # grid spacing
 
 # blending factor
