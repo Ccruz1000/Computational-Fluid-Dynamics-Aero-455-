@@ -191,6 +191,7 @@ residual1 = []
 for number in num_panels:
     check = source_panel(number, geometry, alpha_0)
     residual1.append(check)
+# source_panel(76, geometry1 + '.txt', 0)
 
 plt.figure(3)
 plt.plot(num_panels, residual1, color='r', label='Residual')
@@ -205,4 +206,4 @@ if not os.path.exists(plot_folder):
 plt.savefig(plot_folder + '/Residual Question 1.png', bbox_extra_artists='legend_outside')
 plt.show()
 plt.close()
-# source_panel(16138, geometry, alpha_0)
+source_panel(16138, geometry, alpha_0)
