@@ -39,15 +39,34 @@ def d1_o2_c2(dx, q, N):
     """Function to calculate the first derivative of a field q in numpy
     array form. Uses 2nd order central 2-point stencil.
     """
-    return None
+    N = q.shape[0]
+    dqdx = np.zeros_like(q)
+
+    # Use 2nd order forward differencing for inlet grid point
+    dqdx[0] = (q[1] - q[0]) / (2 * dx)
+
+    # Use 2nd order central differencing for all other points
+    for i in np.arange(1, N-1):
+        dqdx[i] = (q[i+1] - q[i-1]) / (2 * dx)
+    # Use 2nd order backward differencing for outlet grid point
+    dqdx[-1] = (q[-2] - q[-1]) / (2 * dx)
+    return dqdx
 
 
 def d1_o2_b3(dx, q, N):
     """Function to calculate the first derivative of a field q in numpy
     array form. Uses 2nd order backward 3-point stencil.
     """
+    N = q.shape[0]
+    dqdx = np.zeros_like(q)
 
-    return None
+    # Use 2nd order forward differencing with 3 point stencil for first 2 inlet grid points
+    dqdx[0] = (-3*q[0] + 4*q[1] - q[2]) / (2 * dx)
+    dqdx[1] = (-3*q[1] + 4*q[2] - q[3]) / (2 * dx)
+    # Use 2nd order backwards scheme with 3 point stencil for all other points
+    for i in np.arange(2, N-1):
+        dqdx[i] = (3 * q[i] - 4 * q[i-1] + q[i-2]) / (2 * dx)
+    return dqdx
 
 
 # physical parameters
@@ -67,10 +86,14 @@ dx = L/N  # grid spacing
 
 # blending factor
 # p = 0.25
-
+# Calculate Courant Numbers
+courant_1 = (a * dt) / dx
+courant_2 = (a * dt) / (2 * dx)
 # print("Number time steps: ", t.shape[0])
 print("Grid spacing: ", dx)
 print("Time step: ", dt)
+print("Courant 1: ", courant_1)
+print("Courant 2: ", courant_2)
 # print("Blending factor: ", p)
 
 # create array of x-coordinates x[N+1] and solution variables q[N+1]
@@ -79,7 +102,7 @@ x = np.zeros(N + 1)
 # create solution arrays initialized to 0
 q1 = np.zeros(N + 1)
 q1_old = np.zeros(N + 1)
-dq1dx = np.zeros(N + 1)
+dq1dx = np.zeros(N + 1) # This is the 1st order backward scheme solution
 
 q2 = np.zeros(N + 1)
 q2_old = np.zeros(N + 1)
@@ -99,21 +122,26 @@ while t < t_final:
     t += dt
 
     q1[0] = step(t, 0.2, 1)
+    q2[0] = step(t, 0.2, 1)
+    q3[0] = step(t, 0.2, 1)
 
     # calculate first derivatives of previous time
     dq1dx = d1_o1_b2(dx, q1_old, N)
-
+    dq2dx = d1_o2_c2(dx, q2_old, N)
+    dq3dx = d1_o2_b3(dx, q3_old, N)
     # update solution at current time
     q1[1:-1] = q1_old[1:-1] - a*dt*dq1dx[1:-1]  # stops at -2
+    q2[1:-1] = q2_old[1:-1] - a*dt*dq2dx[1:-1]
+    q3[1:-1] = q3_old[1:-1] - a*dt*dq3dx[1:-1]
     # q1[-1] = q1[-2]  # zero gradient outlet BC
     q1_old = q1
+    q2_old = q2
+    q3_old = q3
 
 plt.plot(x, q1, label='1st order backward')
-# plt.plot(x, q2, label='2nd order central')
-# plt.plot(x, q3, label='2nd order backward')
+plt.plot(x, q2, label='2nd order central')
+plt.plot(x, q3, label='2nd order backward')
 plt.legend()
-plt.xlim(-.1, 1.1)
-plt.ylim(-.5, 1.5)
 plt.title('dt = ' + str(dt) + ', N = ' + str(N))
 plt.grid()
 plt.show()
