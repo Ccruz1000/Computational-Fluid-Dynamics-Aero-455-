@@ -2,15 +2,14 @@
 """A Finite Difference code to solve the 1D transient advection equation,
             dq/dt + a dq/dx = 0
 """
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 from matplotlib.pyplot import figure
+
 figure(figsize=(10, 8))
-num = [100, 200, 300, 400, 500, 600, 700, 800]
-# num = [150]
-courant = 0.05
+
+
 def step(t, t_end, step_value):
     """Returns a step function with maximum equal to step_value
     up to time t_end.
@@ -108,7 +107,7 @@ def d1_o2_b3(dx, q, N):
     return dqdx, dq2dx
 
 
-def linear_advection (N):
+def linear_advection_diffusion(N):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
@@ -187,7 +186,7 @@ def linear_advection (N):
     return None
 
 
-def backward_first_order (N):
+def backward_first_order(N):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
@@ -246,7 +245,7 @@ def backward_first_order (N):
     return q1, x, dt, dx
 
 
-def central_second_order (N):
+def central_second_order(N):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
@@ -305,12 +304,7 @@ def central_second_order (N):
     return q1, x, dt, dx
 
 
-def backward_second_order (N):
-    # physical parameters
-    L = 1.0  # length of line domain
-    a = 1.0  # advection velocity a
-    beta = 1e-4  # diffusion coefficient beta
-
+def backward_second_order(N, L, a, beta):
     # time discretization variables
     dt = (courant * L/N) / a  # time step
     # dt = 1e-4
@@ -362,12 +356,23 @@ def backward_second_order (N):
     # plt.grid()
     # plt.show()
     return q1, x, dt, dx
+
+
+# Define values
+L = 1  # Length
+a = 1  # Advection Value
+beta = 1e-4  # Diffusion Coefficient
+# num = [100, 200, 300, 400, 500, 600, 700, 800]
+num = [200]
+courant = 0.05
+
+
 dt = []
 q = []
 dx = []
 x = []
 for i in range(len(num)):
-    q_sol, x_sol, dt_sol, dx_sol = central_second_order(num[i])
+    q_sol, x_sol, dt_sol, dx_sol = backward_second_order(num[i], L, a, beta)
     q.append(q_sol)
     x.append(x_sol)
     dt.append(dt_sol)
@@ -375,12 +380,11 @@ for i in range(len(num)):
 
 plt.figure(1)
 for i in range(len(num)):
-    plt.plot(x[i], q[i], label='2nd Order Backward, ' + str(num[i]) + ' Divisions, ' + 'dt=' + str(np.format_float_scientific(dt[i], precision=3)))
-plt.title('2nd Order Backward')
+    plt.plot(x[i], q[i], label='2nd Order Central, ' + str(num[i]) + ' Divisions, ' + 'dt=' + str(np.format_float_scientific(dt[i], precision=3)))
+plt.title('2nd Order Central Diffusion-Advection')
 plt.grid()
 plt.xlabel('X')
 plt.ylabel('q')
 plt.legend(loc='best')
 plt.show()
-# linear_advection(200)
 

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 figure(figsize=(10, 8))
 # num = [100, 200, 300, 400, 500, 600, 700, 800]
-num = [150]
+num = [200]
 courant = 0.05
 def step(t, t_end, step_value):
     """Returns a step function with maximum equal to step_value
@@ -80,8 +80,8 @@ def linear_advection (N):
     # beta = 1e-4  # diffusion coefficient beta
 
     # time discretization variables
-    dt = (courant * L/N) / a  # time step
-    # dt = 1e-4
+    # dt = (courant * L/N) / a  # time step
+    dt = 1e-4
     t_final = 0.75  # final time
     t = 0.  # time variable
     # t = np.zeros(int(t_final/dt))
@@ -215,7 +215,7 @@ def central_second_order (N):
     # beta = 1e-4  # diffusion coefficient beta
 
     # time discretization variables
-    dt = (courant * L/N) / a  # time step
+    dt = (courant * 2 * L/N) / a  # time step
     # dt = 1e-4
     t_final = 0.75  # final time
     t = 0.  # time variable
@@ -324,25 +324,24 @@ def backward_second_order (N):
     # plt.grid()
     # plt.show()
     return q1, x, dt, dx
-dt = []
-q = []
-dx = []
-x = []
-for i in range(len(num)):
-    q_sol, x_sol, dt_sol, dx_sol = backward_second_order(num[i])
-    q.append(q_sol)
-    x.append(x_sol)
-    dt.append(dt_sol)
-    dx.append(dx_sol)
-
-plt.figure(1)
-for i in range(len(num)):
-    plt.plot(x[i], q[i], label='2nd Order Backward, ' + str(num[i]) + ' Divisions, ' + 'dt=' + str(np.format_float_scientific(dt[i], precision=3)))
-plt.title('2nd Order Backward')
-plt.grid()
-plt.xlabel('X')
-plt.ylabel('q')
-plt.legend(loc='best')
-plt.show()
-# linear_advection(num)
-
+# dt = []
+# q = []
+# dx = []
+# x = []
+# for i in range(len(num)):
+#     q_sol, x_sol, dt_sol, dx_sol = backward_second_order(num[i])
+#     q.append(q_sol)
+#     x.append(x_sol)
+#     dt.append(dt_sol)
+#     dx.append(dx_sol)
+#
+# plt.figure(1)
+# for i in range(len(num)):
+#     plt.plot(x[i], q[i], label='2nd Order Backward, ' + str(num[i]) + ' Divisions, ' + 'dt=' + str(np.format_float_scientific(dt[i], precision=3)))
+# plt.title('2nd Order Backward')
+# plt.grid()
+# plt.xlabel('X')
+# plt.ylabel('q')
+# plt.legend(loc='best')
+# plt.show()
+linear_advection(num[0])
