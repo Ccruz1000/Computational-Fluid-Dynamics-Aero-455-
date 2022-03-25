@@ -319,5 +319,3 @@ def a_backward_second_order (N, L = 1, a = 1, beta = 1e-4, dt = 1e-4):
     # plt.grid()
     # plt.show()
     return q1, x, dt, dx
-
-
