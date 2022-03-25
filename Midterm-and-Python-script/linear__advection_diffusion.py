@@ -10,6 +10,8 @@ from matplotlib.pyplot import figure
 figure(figsize=(10, 8))
 
 
+courant = 0.05
+
 def step(t, t_end, step_value):
     """Returns a step function with maximum equal to step_value
     up to time t_end.
@@ -22,7 +24,7 @@ def step(t, t_end, step_value):
     return value
 
 
-def d1_o1_b2(dx, q, N):
+def bonus_d1_o1_b2(dx, q, N):
     """Function to calculate the first derivative of a field q in numpy
     array form. Uses 1st order backward 2-point stencil.
     """
@@ -49,7 +51,7 @@ def d1_o1_b2(dx, q, N):
     return dqdx, dq2dx
 
 
-def d1_o2_c2(dx, q, N):
+def bonus_d1_o2_c2(dx, q, N):
     """Function to calculate the first derivative of a field q in numpy
     array form. Uses 2nd order central 2-point stencil.
     """
@@ -79,7 +81,7 @@ def d1_o2_c2(dx, q, N):
     return dqdx, dq2dx
 
 
-def d1_o2_b3(dx, q, N):
+def bonus_d1_o2_b3(dx, q, N):
     """Function to calculate the first derivative of a field q in numpy
     array form. Uses 2nd order backward 3-point stencil.
     """
@@ -107,7 +109,7 @@ def d1_o2_b3(dx, q, N):
     return dqdx, dq2dx
 
 
-def linear_advection_diffusion(N):
+def linear_advection_diffusion(N, L = 1, a = 1, beta = 1e-4):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
@@ -164,9 +166,9 @@ def linear_advection_diffusion(N):
         q3[0] = step(t, 0.2, 1)
 
         # calculate first derivatives of previous time
-        dq1dx, dq1dx2 = d1_o1_b2(dx, q1_old, N)
-        dq2dx, dq2dx2 = d1_o2_c2(dx, q2_old, N)
-        dq3dx, dq3dx2 = d1_o2_b3(dx, q3_old, N)
+        dq1dx, dq1dx2 = bonus_d1_o1_b2(dx, q1_old, N)
+        dq2dx, dq2dx2 = bonus_d1_o2_c2(dx, q2_old, N)
+        dq3dx, dq3dx2 = bonus_d1_o2_b3(dx, q3_old, N)
         # update solution at current time
         q1[1:-1] = q1_old[1:-1] - a * dt * dq1dx[1:-1] + beta * dt * dq1dx2[1:-1]  # stops at -2
         q2[1:-1] = q2_old[1:-1] - a * dt * dq2dx[1:-1] + beta * dt * dq2dx2[1:-1]
@@ -186,12 +188,7 @@ def linear_advection_diffusion(N):
     return None
 
 
-def backward_first_order(N):
-    # physical parameters
-    L = 1.0  # length of line domain
-    a = 1.0  # advection velocity a
-    beta = 1e-4  # diffusion coefficient beta
-
+def d_backward_first_order(N, L = 1, a = 1, beta = 1e-4):
     # time discretization variables
     # dt = (courant * L/N) / a  # time step
     dt = 1e-4
@@ -231,7 +228,7 @@ def backward_first_order(N):
         q1[0] = step(t, 0.2, 1)
 
         # calculate first derivatives of previous time
-        dq1dx, dq2dx = d1_o1_b2(dx, q1_old, N)
+        dq1dx, dq2dx = bonus_d1_o1_b2(dx, q1_old, N)
         # update solution at current time
         q1[1:-1] = q1_old[1:-1] - a*dt*dq1dx[1:-1] + beta * dt * dq2dx[1:-1]  # stops at -2
         q1[-1] = q1[-2]  # zero gradient outlet BC
@@ -245,12 +242,7 @@ def backward_first_order(N):
     return q1, x, dt, dx
 
 
-def central_second_order(N):
-    # physical parameters
-    L = 1.0  # length of line domain
-    a = 1.0  # advection velocity a
-    beta = 1e-4  # diffusion coefficient beta
-
+def d_central_second_order(N, L = 1, a = 1, beta = 1e-4):
     # time discretization variables
     dt = (courant * L/N) / a  # time step
     # dt = 1e-4
@@ -290,7 +282,7 @@ def central_second_order(N):
         q1[0] = step(t, 0.2, 1)
 
         # calculate first derivatives of previous time
-        dq1dx, dq2dx = d1_o1_b2(dx, q1_old, N)
+        dq1dx, dq2dx = bonus_d1_o2_c2(dx, q1_old, N)
         # update solution at current time
         q1[1:-1] = q1_old[1:-1] - a * dt * dq1dx[1:-1] + beta * dt * dq2dx[1:-1]  # stops at -2
         q1[-1] = q1[-2]  # zero gradient outlet BC
@@ -304,7 +296,7 @@ def central_second_order(N):
     return q1, x, dt, dx
 
 
-def backward_second_order(N, L, a, beta):
+def d_backward_second_order(N, L = 1, a = 1, beta = 1e-4):
     # time discretization variables
     dt = (courant * L/N) / a  # time step
     # dt = 1e-4
@@ -356,35 +348,3 @@ def backward_second_order(N, L, a, beta):
     # plt.grid()
     # plt.show()
     return q1, x, dt, dx
-
-
-# Define values
-L = 1  # Length
-a = 1  # Advection Value
-beta = 1e-4  # Diffusion Coefficient
-# num = [100, 200, 300, 400, 500, 600, 700, 800]
-num = [200]
-courant = 0.05
-
-
-dt = []
-q = []
-dx = []
-x = []
-for i in range(len(num)):
-    q_sol, x_sol, dt_sol, dx_sol = backward_second_order(num[i], L, a, beta)
-    q.append(q_sol)
-    x.append(x_sol)
-    dt.append(dt_sol)
-    dx.append(dx_sol)
-
-plt.figure(1)
-for i in range(len(num)):
-    plt.plot(x[i], q[i], label='2nd Order Central, ' + str(num[i]) + ' Divisions, ' + 'dt=' + str(np.format_float_scientific(dt[i], precision=3)))
-plt.title('2nd Order Central Diffusion-Advection')
-plt.grid()
-plt.xlabel('X')
-plt.ylabel('q')
-plt.legend(loc='best')
-plt.show()
-

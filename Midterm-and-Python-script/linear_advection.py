@@ -73,11 +73,11 @@ def d1_o2_b3(dx, q, N):
         dqdx[i] = (3 * q[i] - 4 * q[i-1] + q[i-2]) / (2 * dx)
     return dqdx
 
-def linear_advection (N):
+def linear_advection (N, L = 1, a = 1, beta = 1e-4):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
-    # beta = 1e-4  # diffusion coefficient beta
+    beta = 1e-4  # diffusion coefficient beta
 
     # time discretization variables
     # dt = (courant * L/N) / a  # time step
@@ -140,7 +140,7 @@ def linear_advection (N):
         q3_old = q3
 
     plt.plot(x, q1, label='1st order backward')
-    plt.plot(x, q2, label='2nd order central')
+    # plt.plot(x, q2, label='2nd order central')
     plt.plot(x, q3, label='2nd order backward')
     plt.legend()
     plt.title('dt = ' + str(dt) + ', N = ' + str(N) + ', dx = ' + str(dx))
@@ -149,7 +149,7 @@ def linear_advection (N):
     return None
 
 
-def backward_first_order (N):
+def a_backward_first_order (N, L = 1, a = 1, beta = 1e-4):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
@@ -208,15 +208,10 @@ def backward_first_order (N):
     return q1, x, dt, dx
 
 
-def central_second_order (N):
-    # physical parameters
-    L = 1.0  # length of line domain
-    a = 1.0  # advection velocity a
-    # beta = 1e-4  # diffusion coefficient beta
-
+def a_central_second_order (N, L = 1, a = 1, beta = 1e-4):
     # time discretization variables
-    dt = (courant * 2 * L/N) / a  # time step
-    # dt = 1e-4
+    # dt = (courant * 2 * L/N) / a  # time step
+    dt = 1e-6
     t_final = 0.75  # final time
     t = 0.  # time variable
     # t = np.zeros(int(t_final/dt))
@@ -267,7 +262,7 @@ def central_second_order (N):
     return q1, x, dt, dx
 
 
-def backward_second_order (N):
+def a_backward_second_order (N, L = 1, a = 1, beta = 1e-4):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
@@ -324,24 +319,5 @@ def backward_second_order (N):
     # plt.grid()
     # plt.show()
     return q1, x, dt, dx
-# dt = []
-# q = []
-# dx = []
-# x = []
-# for i in range(len(num)):
-#     q_sol, x_sol, dt_sol, dx_sol = backward_second_order(num[i])
-#     q.append(q_sol)
-#     x.append(x_sol)
-#     dt.append(dt_sol)
-#     dx.append(dx_sol)
-#
-# plt.figure(1)
-# for i in range(len(num)):
-#     plt.plot(x[i], q[i], label='2nd Order Backward, ' + str(num[i]) + ' Divisions, ' + 'dt=' + str(np.format_float_scientific(dt[i], precision=3)))
-# plt.title('2nd Order Backward')
-# plt.grid()
-# plt.xlabel('X')
-# plt.ylabel('q')
-# plt.legend(loc='best')
-# plt.show()
-linear_advection(num[0])
+
+
