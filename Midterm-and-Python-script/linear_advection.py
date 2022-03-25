@@ -140,7 +140,7 @@ def linear_advection (N, L = 1, a = 1, beta = 1e-4):
         q3_old = q3
 
     plt.plot(x, q1, label='1st order backward')
-    # plt.plot(x, q2, label='2nd order central')
+    plt.plot(x, q2, label='2nd order central')
     plt.plot(x, q3, label='2nd order backward')
     plt.legend()
     plt.title('dt = ' + str(dt) + ', N = ' + str(N) + ', dx = ' + str(dx))
@@ -149,14 +149,14 @@ def linear_advection (N, L = 1, a = 1, beta = 1e-4):
     return None
 
 
-def a_backward_first_order (N, L = 1, a = 1, beta = 1e-4):
+def a_backward_first_order (N, L = 1, a = 1, beta = 1e-4, dt = 1e-4):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
     # beta = 1e-4  # diffusion coefficient beta
 
     # time discretization variables
-    dt = (courant * L/N) / a  # time step
+    # dt = (courant * L/N) / a  # time step
     # dt = 1e-4
     t_final = 0.75  # final time
     t = 0.  # time variable
@@ -208,7 +208,7 @@ def a_backward_first_order (N, L = 1, a = 1, beta = 1e-4):
     return q1, x, dt, dx
 
 
-def a_central_second_order (N, L = 1, a = 1, beta = 1e-4):
+def a_central_second_order (N, L = 1, a = 1, beta = 1e-4, dt = 1e-4):
     # time discretization variables
     # dt = (courant * 2 * L/N) / a  # time step
     dt = 1e-6
@@ -262,7 +262,7 @@ def a_central_second_order (N, L = 1, a = 1, beta = 1e-4):
     return q1, x, dt, dx
 
 
-def a_backward_second_order (N, L = 1, a = 1, beta = 1e-4):
+def a_backward_second_order (N, L = 1, a = 1, beta = 1e-4, dt = 1e-4):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a

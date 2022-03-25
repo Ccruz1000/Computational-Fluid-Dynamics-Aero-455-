@@ -109,15 +109,13 @@ def bonus_d1_o2_b3(dx, q, N):
     return dqdx, dq2dx
 
 
-def linear_advection_diffusion(N, L = 1, a = 1, beta = 1e-4):
+def linear_advection_diffusion(N, L = 1, a = 1, beta = 1e-3, dt=1e-4):
     # physical parameters
     L = 1.0  # length of line domain
     a = 1.0  # advection velocity a
-    beta = 1e-4  # diffusion coefficient beta
 
     # time discretization variables
     # dt = (courant * L/N) / a  # time step
-    dt = 1e-4
     t_final = 0.75  # final time
     t = 0.  # time variable
     # t = np.zeros(int(t_final/dt))
@@ -188,10 +186,9 @@ def linear_advection_diffusion(N, L = 1, a = 1, beta = 1e-4):
     return None
 
 
-def d_backward_first_order(N, L = 1, a = 1, beta = 1e-4):
+def d_backward_first_order(N, L = 1, a = 1, beta = 1e-4, dt=1e-4):
     # time discretization variables
     # dt = (courant * L/N) / a  # time step
-    dt = 1e-4
     t_final = 0.75  # final time
     t = 0.  # time variable
     # t = np.zeros(int(t_final/dt))
@@ -205,6 +202,7 @@ def d_backward_first_order(N, L = 1, a = 1, beta = 1e-4):
     # print("Number time steps: ", t.shape[0])
     print("Grid spacing: ", dx)
     print("Time step: ", dt)
+    print("Beta: ", beta)
     # print("Blending factor: ", p)
 
     # create array of x-coordinates x[N+1] and solution variables q[N+1]
@@ -242,7 +240,7 @@ def d_backward_first_order(N, L = 1, a = 1, beta = 1e-4):
     return q1, x, dt, dx
 
 
-def d_central_second_order(N, L = 1, a = 1, beta = 1e-4):
+def d_central_second_order(N, L = 1, a = 1, beta = 1e-4, dt = 1e-4):
     # time discretization variables
     dt = (courant * L/N) / a  # time step
     # dt = 1e-4
@@ -296,7 +294,7 @@ def d_central_second_order(N, L = 1, a = 1, beta = 1e-4):
     return q1, x, dt, dx
 
 
-def d_backward_second_order(N, L = 1, a = 1, beta = 1e-4):
+def d_backward_second_order(N, L = 1, a = 1, beta = 1e-3, dt = 1e-4):
     # time discretization variables
     dt = (courant * L/N) / a  # time step
     # dt = 1e-4
@@ -336,7 +334,7 @@ def d_backward_second_order(N, L = 1, a = 1, beta = 1e-4):
         q1[0] = step(t, 0.2, 1)
 
         # calculate first derivatives of previous time
-        dq1dx, dq2dx = d1_o1_b2(dx, q1_old, N)
+        dq1dx, dq2dx = bonus_d1_o2_b3(dx, q1_old, N)
         # update solution at current time
         q1[1:-1] = q1_old[1:-1] - a * dt * dq1dx[1:-1] + beta * dt * dq2dx[1:-1]  # stops at -2
         q1[-1] = q1[-2]  # zero gradient outlet BC
